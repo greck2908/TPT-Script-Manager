@@ -1,6 +1,6 @@
 --Cracker64's Autorun Script Manager
 --The autorun to end all autoruns
---Version 3.11
+--Version 3.10
 
 --TODO:
 --manual file addition (that can be anywhere and any extension)
@@ -9,7 +9,6 @@
 --prettier, organize code
 
 --CHANGES:
---Version 3.11: Fix icons in 94.0, fix "view script in browser"
 --Version 3.10: Fix HTTP requests, without this update the online section may break
 --Version 3.9: Minor icon fix for latest version of jacob1's mod
 --Version 3.8: Fix being unable to download scripts with / in the name, make sure tooltips don't go offscreen
@@ -33,32 +32,17 @@
 --  Place a line '--VER num UPDATE link' in one of the first four lines of the file, see my above example
 --  The link at top downloads a file that contains ONLY version,full link,and prints the rest(changelog). See my link for example
 
-local jacobsmod = tpt.version.jacob1s_mod
-
-local icons = {
-	["delete1"] = "\xEE\x80\x85",
-	["delete2"] = "\xEE\x80\x86",
-	["folder"] = "\xEE\x80\x93"
-}
-if jacobsmod then
-	icons = {
-		["delete1"] = "\133",
-		["delete2"] = "\134",
-		["folder"] = "\147"
-	}
-end
-
-
 if not socket then error("TPT version not supported") end
 if MANAGER then error("manager is already running") end
 
-local scriptversion = 13
-MANAGER = {["version"] = "3.11", ["scriptversion"] = scriptversion, ["hidden"] = true}
+local scriptversion = 12
+MANAGER = {["version"] = "3.10", ["scriptversion"] = scriptversion, ["hidden"] = true}
 
 local type = type -- people like to overwrite this function with a global a lot
 local TPT_LUA_PATH = 'scripts'
 local PATH_SEP = '\\'
 local OS = "WIN32"
+local jacobsmod = tpt.version.jacob1s_mod
 local CHECKUPDATE = false
 local EXE_NAME
 if platform then
@@ -565,8 +549,8 @@ new_button = function(x,y,w,h,splitx,f,f2,text,localscript)
 			local swapicon = tpt.version.jacob1s_mod_build and tpt.version.jacob1s_mod_build > 76
 			local offsetX = swapicon and 1 or 0
 			local offsetY = swapicon and 2 or 0
-			local innericon = swapicon and icons["delete1"] or icons["delete2"]
-			local outericon = swapicon and icons["delete2"] or icons["delete1"]
+			local innericon = swapicon and "\133" or "\134"
+			local outericon = swapicon and "\134" or "\133"
 			if self.deletealmostselected then
 				self.deletealmostselected = false
 				tpt.drawtext(self.x+1+offsetX, self.y+1+offsetY, innericon, 255, 48, 32, 255)
@@ -575,7 +559,7 @@ new_button = function(x,y,w,h,splitx,f,f2,text,localscript)
 			end
 			tpt.drawtext(self.x+1+offsetX, self.y+1+offsetY, outericon, 255, 255, 255, 255)
 		else
-			tpt.drawtext(self.x+1, self.y+1, icons["folder"], 255, 200, 80, 255)
+			tpt.drawtext(self.x+1, self.y+1, "\147", 255, 200, 80, 255)
 		end
 		tpt.drawrect(self.x+12,self.y+1,8,8)
 		if self.almostselected then self.almostselected=false tpt.fillrect(self.x+12,self.y+1,8,8,150,150,150)
@@ -1000,7 +984,7 @@ function ui_button.uploadscript(self)
 		local command = (OS == "WIN32" or OS == "WIN64") and "start" or (OS == "MACOSX" and "open" or "xdg-open")
 		os.execute(command.." "..TPT_LUA_PATH)
 	else
-		open_link("https://starcatcher.us/scripts/paste.lua")
+		open_link("http://starcatcher.us/scripts/#submit-page")
 	end
 end
 local lastpaused
@@ -1102,7 +1086,7 @@ function ui_button.delete(self)
 	end
 end
 function ui_button.viewonline(self)
-	open_link("https://starcatcher.us/scripts?view="..self.ID)
+	open_link("http://starcatcher.us/scripts/#"..self.ID)
 end
 function ui_button.scriptcheck(self)
 	local oldpath = localscripts[self.ID]["path"]
@@ -1144,7 +1128,7 @@ function ui_button.localview(self)
 		donebutton.t.text = "DONE"
 		donebutton.w = 29 donebutton.x2 = donebutton.x + donebutton.w
 		donebutton.f = ui_button.donepressed
-		uploadscriptbutton.t.text = icons["folder"].." Script Folder"
+		uploadscriptbutton.t.text = "\147 Script Folder"
 	end
 end
 function ui_button.onlineview(self)
@@ -1168,7 +1152,7 @@ mainwindow:add(nonebutton)
 mainwindow:add(ui_button.new(538,339,33,10,ui_button.consoleclear,"CLEAR"))
 mainwindow:add(ui_button.new(278,67,39,10,ui_button.reloadpressed,"RELOAD"))
 mainwindow:add(ui_button.new(378,67,51,10,ui_button.changedir,"Change dir"))
-uploadscriptbutton = ui_button.new(478,67,79,10,ui_button.uploadscript, icons["folder"].." Script Folder")
+uploadscriptbutton = ui_button.new(478,67,79,10,ui_button.uploadscript,"\147 Script Folder")
 mainwindow:add(uploadscriptbutton)
 local tempbutton = ui_button.new(60, 65, 30, 10, ui_button.localview, "Local")
 tempbutton.drawbox = true
